@@ -15,7 +15,7 @@
     </div>
     <div class="row">
       <div v-for="(data, idx) in bankList" :key="idx" class="col-12 q-mb-xs">
-         <q-card class="my-card">
+         <q-card @click="doChangeWallet()" class="my-card">
           <q-card-section>
             <div class="row">
               <div class="col-2">
@@ -64,6 +64,11 @@ export default {
           imagePath: require('../../assets/bri.svg')
         }
       ]
+    }
+  },
+  methods: {
+    doChangeWallet () {
+      this.$router.push('/home')
     }
   }
 }

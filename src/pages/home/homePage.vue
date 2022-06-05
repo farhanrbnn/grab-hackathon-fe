@@ -1,8 +1,13 @@
 <template>
   <div class="q-pa-md" style="height: 100vh;">
     <div class="row">
-      <div class="col-12">
+      <div class="col-6">
         <p class="text-left q-mt-xs">Hi, Farhan Rabbaanii</p>
+      </div>
+      <div class="col-6">
+        <router-link to="/account">
+          <q-icon size="2rem"  style="color: #00C31E; float: right;" name="account_circle" />
+        </router-link>
       </div>
     </div>
     <div class="row">
@@ -75,12 +80,15 @@
     </div>
     <div class="row q-mt-md">
       <div class="col-12">
-        <q-btn style="background: #00C31E; color: white" icon="add_circle" size="lg" class="full-width" label="Donate Now" />
+        <q-btn style="background: #00C31E; color: white" @click="goToSourceFund()" icon="add_circle" size="lg" class="full-width" label="Donate Now" />
       </div>
     </div>
     <div class="row q-mt-md">
-      <div class="col-12">
+      <div class="col-6">
         <h6 class="q-my-md">Last Transaction</h6>
+      </div>
+      <div class="col-6">
+        <a href="#" class="q-my-md" style="float: right; color:#00C31E;">See More</a>
       </div>
       <div v-for="(data, idx) in lastTransactions" :key="idx" class="col-12 q-mb-xs">
         <q-card class="my-card">
@@ -123,6 +131,11 @@ export default {
           total: 'Rp. 500.000'
         }
       ]
+    }
+  },
+  methods: {
+    goToSourceFund () {
+      this.$router.push('/sourceFund')
     }
   }
 }
