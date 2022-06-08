@@ -14,9 +14,10 @@
         >
       </div>
     </div>
+    <q-form @submit="onSubmit">
     <div class="row q-mt-lg">
       <div class="col-12"> 
-        <q-input color="green" v-model="userData.phoneNumber" label="Phone Number">
+        <q-input color="green" v-model="userData.phone" label="Phone Number">
           <template v-slot:prepend>
             <q-icon name="phone_iphone" />
           </template>
@@ -32,27 +33,37 @@
     </div>
     <div class="row q-mx-lg q-mb-lg fixed-bottom">
       <div class="col-12">
-        <q-btn style="background: #00C31E; color: white" @click="submitData()" class="full-width" label="Submit" />
+        <q-btn type="submit" style="background: #00C31E; color: white"  class="full-width" label="Submit" />
       </div>
     </div> 
+    </q-form>
   </div>
 </template>
 
 <script>
+import { api } from 'src/boot/axios'
 export default {
   name: 'loginsPage',
   data () {
     return {
       userData: {
-        phoneNumber: '',
-        password: ''
+        phone: null,
+        password: null 
       }
     }
   },
   methods: {
-    submitData () {
-      const data = this.userData
-      console.log(data)
+    onSubmit () {
+      const userData = this.userData
+
+      api.post('user/signin', userData)
+      .then((res) => {
+        this.$router.push('/home')
+      })
+      .catch((err) => {
+        console.log(err)
+        alert('error')
+      })
     }
   }
 }

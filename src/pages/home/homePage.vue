@@ -14,9 +14,9 @@
       <div class="col-12">
         <h6 class="q-my-xs"> Your Location</h6>
         <div class="row q-mb-md">
-          <div class="col-8 inline">
+          <div class="col-12 inline">
             <q-icon size="2rem"  style="color: #FF3C3C; float: left;" name="location_on" />
-            <a href="#" class="q-my-xs" style="float: left; color: black;">Jalan Kemanggisan Raya</a>
+            <a href="#" class="q-my-xs" style="float: left; color: black;">{{ address }}</a>
           </div> 
         </div>
       </div>
@@ -88,7 +88,7 @@
         <h6 class="q-my-md">Last Transaction</h6>
       </div>
       <div class="col-6">
-        <a href="#" class="q-my-md" style="float: right; color:#00C31E;">See More</a>
+        <a href="/#/orderHistory"  class="q-my-md" style="float: right; color:#00C31E;">See More</a>
       </div>
       <div v-for="(data, idx) in lastTransactions" :key="idx" class="col-12 q-mb-xs">
         <q-card class="my-card">
@@ -115,6 +115,9 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { Cookies } from 'quasar'
+
 export default {
   name: 'homePage',
   data () {
@@ -130,12 +133,37 @@ export default {
           date: '28 Mei 2022',
           total: 'Rp. 500.000'
         }
-      ]
+      ],
+      address: null,
+      position: null
     }
   },
+  created () {
+    this.setUserGeo()
+  },
   methods: {
+    getAddress () {
+      axios.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this.position.lat +','+ this.position.lng +'&key=AIzaSyAXeq6g3HL9uaX2X-kphWHhr-MghMf844A')
+      .then((res) => {
+        const address = res.data.results[0].formatted_address
+        const split = address.split(",")
+        this.address = split[0] + ' ' + split[1]
+
+        Cookies.set('geolocation', this.position)
+        Cookies.set('user_address', this.address)
+      })
+    },
     goToSourceFund () {
       this.$router.push('/sourceFund')
+    },
+    async setUserGeo () {
+      await navigator.geolocation.getCurrentPosition((position) => {
+        this.position = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude, 
+        }
+        this.getAddress()
+      })
     }
   }
 }

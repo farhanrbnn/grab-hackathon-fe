@@ -4,7 +4,12 @@ import axios from 'axios'
 
 // "async" is optional;
 // more info on params: https://v2.quasar.dev/quasar-cli/boot-files
-const api = axios.create({ baseURL: 'https://api.example.com' })
+const api = axios.create({ 
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8'
+  },
+  baseURL: 'http://192.168.0.133:9090/api/v1/'
+ })
 
 export default boot(({ app }) => {
   // something to do

@@ -14,16 +14,32 @@
         >
       </div>
     </div>
+    <q-form @submit="onSubmit">
     <div class="row q-mt-lg">
       <div class="col-12">
-        <q-input color="green" v-model="userData.phoneNumber" label="Phone Number">
+        <q-input color="green" v-model="userData.username" label="Username">
+          <template v-slot:prepend>
+            <q-icon name="person" />
+          </template>
+        </q-input>
+        </div>
+      <div class="col-12">
+        <q-input color="green" v-model="userData.email" label="email">
+          <template v-slot:prepend>
+            <q-icon name="email" />
+          </template>
+        </q-input>
+        </div>
+ 
+      <div class="col-12">
+        <q-input color="green" v-model="userData.phone" label="Phone Number">
           <template v-slot:prepend>
             <q-icon name="phone_iphone" />
           </template>
         </q-input>
       </div>
       <div class="col-12">
-        <q-input color="green" v-model="userData.fullName" label="Full Name">
+        <q-input color="green" v-model="userData.name" label="Full Name">
           <template v-slot:prepend>
             <q-icon name="person" />
           </template>
@@ -39,28 +55,48 @@
     </div>
     <div class="row q-mx-lg q-mb-lg fixed-bottom">
       <div class="col-12">
-        <q-btn style="background: #00C31E; color: white" @click="submitData()" class="full-width" label="Submit" />
+        <q-btn type="submit" style="background: #00C31E; color: white" class="full-width" label="Submit" />
       </div>
     </div>
+    </q-form>
   </div>
 </template>
 
 <script>
+import { api } from 'src/boot/axios'
+import { useQuasar } from 'quasar'
+
+
 export default {
   name: 'registerPage',
   data () {
     return {
       userData: {
-        fullName: '',
-        password: '',
-        fullName: ''
+        username: null,
+        password: null,
+        name: null,
+        phone: null,
+        email:  null 
       }
     }
   },
   methods: {
-    submitData () {
-      const data = this.userData
-      console.log(data)
+    onSubmit () {
+      const userData = this.userData
+
+      api.post('user/create', userData)
+      .then((res) => {
+        const $q = useQuasar()
+        $q.notify({
+          message: 'Jim pinged you.',
+          caption: '5 minutes ago',
+          color: 'secondary'
+        }) 
+      })
+      .catch((err) => {
+        console.log(err)
+        alert('error:', err.responseText)
+      })
     }
   }
 }

@@ -36,6 +36,9 @@ const routes = [
       },
       { 
         path: 'merchantProduct', component: () => import('pages/merchantProduct/merchantProductPage.vue')
+      },
+      { 
+        path: 'orderHistory', component: () => import('pages/orderHistory/orderHistoryPage.vue')
       }
     ]
   },

@@ -31,7 +31,7 @@
         </h6>
       </div>
     </div>
-    <div class="row justify-center q-gutter-xs">
+    <div class="row justify-center q-gutter-xs" style="padding-bottom: 100px;">
       <q-intersection
         v-for="data in listProduct"
         :key="data.productId"
@@ -40,15 +40,17 @@
         <q-card class="q-ma-sm">
           <img :src="data.images" style="width: 10rem;">
           <q-card-section>
-            <div class="text-h6">{{ data.name }}</div>
+            <p class="q-my-none">
+              <b>{{ data.name }}</b>
+            </p>
             <p>{{ data.description }}</p>
-            <h6 class="q-my-xs">Rp. {{ data.price }}</h6>
+            <p class="q-my-xs">Rp. {{ formatPrice(data.price) }}</p>
             <div class="row q-mt-md">
               <div class="col-2">
                 <q-icon size="2rem" @click="removeProduct(data.productId)"  style="color: #00C31E;" name="remove" />
               </div>
               <div class="col-8">
-                <h6 class="q-my-none text-center">0</h6>
+                <h6 class="q-my-none text-center"></h6>
               </div>
               <div class="col-2">
                 <q-icon size="2rem" @click="addProduct(data.productId, data.price)"  style="color: #00C31E;" name="add" />
@@ -58,12 +60,22 @@
         </q-card>
       </q-intersection>
     </div>
+    <div v-if="showFooter" class="row q-mx-lg q-mb-lg fixed-bottom" style="margin-top: 200px;" >
+      <div class="col-12">
+        <footer-product-display :localData="localData" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import footerProductDisplay from '../../components/footerProduct/footerProductDisplay.vue'
+
 export default {
   name: 'merchantProductPage',
+  components: {
+    footerProductDisplay
+  },
   data () {
     return {
      listProduct: [
@@ -96,11 +108,37 @@ export default {
          images: require('../../assets/burger.jpeg') 
        }
      ],
-     cart: []
+     showFooter: false,
+     localData: null 
     }
   },
-  methods: { 
+  mounted () {
+    this.footerStatus()
+    this.getLocalData()
+  },
+  methods: {
+    getLocalData () {
+      const localData = localStorage.getItem('cart')
+      this.localData = localData
+    },
+    formatPrice (value) {
+      const val = (value/1).toFixed(2).replace('.', ',')
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    },
+    footerStatus () {
+      const localData = localStorage.getItem('cart')
+      const parsedData = JSON.parse(localData)
+
+      if (localData !== null) {
+        if (parsedData.length > 0) {
+        this.showFooter = true 
+      } else {
+        this.showFooter = false 
+      }
+      } 
+    },
     addProduct (productId, productPrice) {
+      this.showFooter = true
       const localData = localStorage.getItem('cart')
       const parsedData = JSON.parse(localData)
 
@@ -133,16 +171,36 @@ export default {
 
           parsedData.push(newProduct)
 
-          console.log(parsedData)
           const stringifyData = JSON.stringify(parsedData)
 
           localStorage.setItem('cart', stringifyData)
-
         }
+        this.localData = parsedData 
       }
     },
     removeProduct (productId) {
-      console.log(productId)
+      const localData = localStorage.getItem('cart')
+      const parsedData = JSON.parse(localData)
+
+      const product = parsedData.filter(d => d.productId === productId)
+
+      if (product[0].quantity > 0) {
+        product[0].quantity = product[0].quantity - 1
+
+        const stringifyData = JSON.stringify(parsedData)
+
+        localStorage.setItem('cart', stringifyData) 
+      }
+
+      if (product[0].quantity === 0) {
+        const deleteObject = parsedData.filter(item => item.productId !== productId)
+        const stringifyData = JSON.stringify(deleteObject)
+
+        localStorage.setItem('cart', stringifyData)
+
+        this.showFooter = false
+      }
+      
     }
   }
 }
