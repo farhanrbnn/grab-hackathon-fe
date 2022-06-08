@@ -39,7 +39,14 @@ const routes = [
       },
       { 
         path: 'orderHistory', component: () => import('pages/orderHistory/orderHistoryPage.vue')
+      },
+      { 
+        path: 'orderHistoryDetail', component: () => import('pages/orderHistory/detailPage.vue')
+      },
+      { 
+        path: 'checkout', component: () => import('pages/checkout/checkoutPage.vue')
       }
+
     ]
   },
 

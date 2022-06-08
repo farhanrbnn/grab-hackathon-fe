@@ -1,7 +1,14 @@
 <template>
   <div class="q-pa-none">
     <div class="row">
-      <div class="col-12">
+        <div class="row q-mb-md" style="position: absolute !important; top: 10px; left: 10px; z-index: 1;">
+          <router-link to="/sourceFund">
+            <div class="col-12">
+              <q-icon size="3rem"  style="color: #00C31E; float: left;" name="arrow_circle_left" />
+            </div>
+          </router-link> 
+        </div>
+      <div class="col-12" style="position: relative;">
         <GMapMap
           style = 'height: 65vh'
           :center="center"

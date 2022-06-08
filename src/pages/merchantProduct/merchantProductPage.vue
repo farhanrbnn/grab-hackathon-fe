@@ -62,7 +62,7 @@
     </div>
     <div v-if="showFooter" class="row q-mx-lg q-mb-lg fixed-bottom" style="margin-top: 200px;" >
       <div class="col-12">
-        <footer-product-display :localData="localData" />
+        <footer-product-display @click="goToCheckout()" :localData="localData" />
       </div>
     </div>
   </div>
@@ -117,6 +117,9 @@ export default {
     this.getLocalData()
   },
   methods: {
+    goToCheckout () {
+      this.$router.push('/checkout')
+    },
     getLocalData () {
       const localData = localStorage.getItem('cart')
       this.localData = localData
