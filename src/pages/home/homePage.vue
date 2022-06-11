@@ -16,7 +16,7 @@
         <div class="row q-mb-md">
           <div class="col-12 inline">
             <q-icon size="2rem"  style="color: #FF3C3C; float: left;" name="location_on" />
-            <a href="#" class="q-my-xs" style="float: left; color: black;">{{ address }}</a>
+            <a href="/#/userLocation" class="q-my-xs" style="float: left; color: black;">{{ address }}</a>
           </div> 
         </div>
       </div>
@@ -111,15 +111,20 @@
         </q-card>
       </div> 
     </div>
+    <footer-menu />
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import { Cookies } from 'quasar'
+import footerMenu from '../../components/footerMenu/footerMenu.vue'
 
 export default {
   name: 'homePage',
+  components: {
+    footerMenu
+  }, 
   data () {
     return {
       lastTransactions: [
@@ -127,6 +132,11 @@ export default {
           donateTo: 'donation to panti asuhan A',
           date: '25 Mei 2022',
           total: 'Rp. 250.000'
+        },
+        {
+          donateTo: 'donation to panti asuhan B',
+          date: '28 Mei 2022',
+          total: 'Rp. 500.000'
         },
         {
           donateTo: 'donation to panti asuhan B',

@@ -109,13 +109,14 @@ export default {
        }
      ],
      showFooter: false,
+     cart: [],
      localData: null 
     }
   },
   mounted () {
     this.footerStatus()
     this.getLocalData()
-  },
+  }, 
   methods: {
     goToCheckout () {
       this.$router.push('/checkout')
@@ -154,6 +155,8 @@ export default {
 
         const stringifyData = JSON.stringify(data)
         localStorage.setItem('cart', stringifyData)
+
+        this.localData = JSON.parse(stringifyData) 
 
       } else {
         const isAvailable = parsedData.filter(d => d.productId === productId)

@@ -45,6 +45,9 @@ const routes = [
       },
       { 
         path: 'checkout', component: () => import('pages/checkout/checkoutPage.vue')
+      },
+      { 
+        path: 'userLocation', component: () => import('pages/userLocation/userLocationPage.vue')
       }
 
     ]

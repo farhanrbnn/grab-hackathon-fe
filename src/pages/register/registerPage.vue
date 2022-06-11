@@ -29,8 +29,7 @@
             <q-icon name="email" />
           </template>
         </q-input>
-        </div>
- 
+        </div> 
       <div class="col-12">
         <q-input color="green" v-model="userData.phone" label="Phone Number">
           <template v-slot:prepend>

@@ -21,7 +21,7 @@ export default {
   name: 'footerProductDisplay', 
   props: {
     localData: {
-      type: String 
+      type: Array 
     }
   },
   data () {
