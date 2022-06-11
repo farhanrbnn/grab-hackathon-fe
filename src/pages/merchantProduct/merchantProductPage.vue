@@ -233,7 +233,9 @@ export default {
 
         localStorage.setItem('cart', stringifyData)
 
-        this.showFooter = false
+        // if (parsedData.length === 0) {
+          // this.showFooter = false
+        // }
       }
       
     }

@@ -54,6 +54,9 @@ const routes = [
       },
       { 
         path: 'activityDetail', component: () => import('pages/activity/detailPage.vue')
+      },
+      { 
+        path: 'mockDriver', component: () => import('pages/mockDriver/mainPage.vue')
       }
     ]
   },

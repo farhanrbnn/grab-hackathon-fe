@@ -3,10 +3,10 @@
     <div class="col-12 q-mb-sm">
       <div class="row">
         <div class="col-6">
-          <h6 class="q-my-none">grand total</h6>
+          <h6 class="q-my-md">Grand Total</h6>
         </div>
         <div class="col-6">
-          <h6 class="q-my-none text-right"> Rp. {{ formatPrice(grandTotal) }} </h6>
+          <h6 class="q-my-md text-right"> Rp. {{ formatPrice(grandTotal) }} </h6>
         </div>
       </div>
     </div>
