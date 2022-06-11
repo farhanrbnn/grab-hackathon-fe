@@ -48,8 +48,13 @@ const routes = [
       },
       { 
         path: 'userLocation', component: () => import('pages/userLocation/userLocationPage.vue')
+      },
+      { 
+        path: 'activityList', component: () => import('pages/activity/activityPage.vue')
+      },
+      { 
+        path: 'activityDetail', component: () => import('pages/activity/detailPage.vue')
       }
-
     ]
   },
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md" style="height: 100vh;">
+  <div class="q-pa-md" style="padding-bottom: 100px;">
     <div class="row">
       <div class="col-6">
         <p class="text-left q-mt-xs">Hi, Farhan Rabbaanii</p>
@@ -90,7 +90,7 @@
       <div class="col-6">
         <a href="/#/orderHistory"  class="q-my-md" style="float: right; color:#00C31E;">See More</a>
       </div>
-      <div v-for="(data, idx) in lastTransactions" :key="idx" class="col-12 q-mb-xs">
+      <div @click="goToHistoryDetail()"  v-for="(data, idx) in lastTransactions" :key="idx" class="col-12 q-mb-xs">
         <q-card class="my-card">
           <q-card-section>
             <div class="row">
@@ -111,8 +111,8 @@
         </q-card>
       </div> 
     </div>
-    <footer-menu />
   </div>
+  <footer-menu style="margin-top: 200px;" />
 </template>
 
 <script>
@@ -152,6 +152,9 @@ export default {
     this.setUserGeo()
   },
   methods: {
+    goToHistoryDetail () {
+      this.$router.push('/orderHistoryDetail')
+    },
     getAddress () {
       axios.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this.position.lat +','+ this.position.lng +'&key=AIzaSyAXeq6g3HL9uaX2X-kphWHhr-MghMf844A')
       .then((res) => {

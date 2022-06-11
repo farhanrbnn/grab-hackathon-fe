@@ -1,6 +1,13 @@
 <template>
   <div class="q-pa-none">
     <div class="row">
+      <div class="row q-mb-md" style="position: absolute !important; top: 10px; left: 10px; z-index: 1;">
+          <router-link to="/merchant">
+            <div class="col-12">
+              <q-icon size="3rem"  style="color: #00C31E; float: left;" name="arrow_circle_left" />
+            </div>
+          </router-link> 
+        </div>
       <div class="col">
         <img
           alt="ovo" 
@@ -50,7 +57,7 @@
                 <q-icon size="2rem" @click="removeProduct(data.productId)"  style="color: #00C31E;" name="remove" />
               </div>
               <div class="col-8">
-                <h6 class="q-my-none text-center"></h6>
+                <h6 class="q-my-none text-center">{{ qtyCounter(data.productId) }}</h6>
               </div>
               <div class="col-2">
                 <q-icon size="2rem" @click="addProduct(data.productId, data.price)"  style="color: #00C31E;" name="add" />
@@ -60,7 +67,7 @@
         </q-card>
       </q-intersection>
     </div>
-    <div v-if="showFooter" class="row q-mx-lg q-mb-lg fixed-bottom" style="margin-top: 200px;" >
+    <div v-if="showFooter" class="row q-mx-lg q-mb-lg fixed-bottom" style="margin-top: 200px; background-color: #FFF;" >
       <div class="col-12">
         <footer-product-display @click="goToCheckout()" :localData="localData" />
       </div>
@@ -109,15 +116,35 @@ export default {
        }
      ],
      showFooter: false,
-     cart: [],
+     cart: null,
      localData: null 
+    }
+  },
+  watch: {
+    localData (val) {
+      this.qtyCounter()
+      console.log(this.localData)
     }
   },
   mounted () {
     this.footerStatus()
     this.getLocalData()
-  }, 
+  },
   methods: {
+    qtyCounter (id) {
+      const localData = localStorage.getItem('cart')
+      const parsedData = JSON.parse(localData)
+
+      if (localData !== null) {
+        const product = parsedData.filter(d => d.productId === id)
+
+        if (product.length > 0) { 
+          return product[0].quantity
+        }
+      }
+
+      return 0 
+    },
     goToCheckout () {
       this.$router.push('/checkout')
     },
@@ -195,7 +222,9 @@ export default {
 
         const stringifyData = JSON.stringify(parsedData)
 
-        localStorage.setItem('cart', stringifyData) 
+        localStorage.setItem('cart', stringifyData)
+        
+        this.localData = product
       }
 
       if (product[0].quantity === 0) {

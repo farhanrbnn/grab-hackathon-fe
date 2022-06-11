@@ -1,18 +1,23 @@
 <template>
-  <div class="row fixed-bottom" style="background-color: #FFF; margin-top: 200px;">
-    <div class="col-6 text-center">
-      <q-icon class="q-mt-xs" size="2rem" style="color: #00C31E;" name="home" />
-      <p class="q-mt-none">Home</p>
+  <div class="row fixed-bottom shadow-2" style="background-color: #FFF;">
+    <div class="col-6 text-center" @click="goToPage('home')">
+      <q-icon class="q-mt-sm" size="2rem" style="color: #00C31E;" name="home" />
+      <p class="q-my-none">Home</p>
     </div>
-    <div class="col-6 text-center">
-      <q-icon class="q-mt-xs" size="2rem"  style="color: #00C31E;" name="schedule" />
-      <p class="q-mt-none q-mb-xs">Activity</p>
+    <div class="col-6 text-center" @click="goToPage('activityList')">
+      <q-icon class="q-mt-sm" size="2rem"  style="color: #00C31E;" name="schedule" />
+      <p class="q-my-none" style="color:black; text-decoration: none !important;">Activity</p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'footerMenu'
+  name: 'footerMenu',
+  methods: {
+    goToPage (page) {
+      this.$router.push('/' + page)
+    }
+  }
 }
 </script>
