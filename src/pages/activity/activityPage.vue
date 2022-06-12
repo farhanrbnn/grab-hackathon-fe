@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="row">
-      <div v-for="(data, idx) in activity" :key="idx" class="col-12 q-mb-sm">
+      <div v-for="(data, idx) in activity" @click="goToDetail(data.id)" :key="idx" class="col-12 q-mb-sm">
         <q-card class="my-card">
           <q-card-section>
             <div class="row">
@@ -61,12 +61,13 @@ export default {
       .then((res) => {
         const payload = res.data
         this.activity = payload
-
-        console.log(this.activity)
       })
       .catch((err) => {
         console.log(err)
       })
+    },
+    goToDetail (id) {
+      this.$router.push(`/activityDetail/${id}`)
     }
   }
 }

@@ -75,7 +75,14 @@ export default {
       console.log(checkout)
       api.post('/order/create', checkout, config)
       .then((res) => {
-        console.log(res.data)
+        const payload = res.data
+        this.$router.push(`/activityDetail/${payload.transaction.id}`)
+
+        localStorage.removeItem('funding_source')
+        localStorage.removeItem('drop_off_location')
+        localStorage.removeItem('merchant')
+        localStorage.removeItem('products')
+
       })
       .catch((err) => {
         console.log(err)

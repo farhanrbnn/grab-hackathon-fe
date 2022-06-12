@@ -11,7 +11,7 @@
       <div class="col">
         <img
           alt="ovo" 
-          src="~assets/burgerBener.jpeg"
+          src="~assets/warteg.jpeg"
           style="max-width: 100%"
         >
       </div>    
@@ -45,12 +45,11 @@
         class="example-item"
       >
         <q-card class="q-ma-sm">
-          <img :src="require('../../assets/burger.jpeg')" style="width: 15rem;">
+          <img :src="require('../../assets/food.jpg')" style="width:11em;">
           <q-card-section>
             <p class="q-my-none">
               <b>{{ data.name }}</b>
             </p>
-            <p>{{ data.description }}</p>
             <p class="q-my-xs">Rp. {{ formatPrice(data.price) }}</p>
             <div class="row q-mt-md">
               <div class="col-2">
@@ -288,7 +287,7 @@ export default {
 
 <style scoped>
 .example-item {
-  height: '1em';
-  width: '1em';
+  height: '5em';
+  width: '5em';
 }
 </style>
