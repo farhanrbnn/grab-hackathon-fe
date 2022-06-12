@@ -28,6 +28,9 @@
 
 <script>
 import footerMenu from '../../components/footerMenu/footerMenu.vue'
+import { Cookies } from 'quasar'
+import { api } from 'src/boot/axios'
+
 
 export default {
   name: 'activityPage',
@@ -36,23 +39,35 @@ export default {
   },
   data () {
     return {
-      activity: [
-        {
-          name: 'Donation to Panti Asuhan ABC',
-          status: 'Delivery to Drop Off'
-        },
-        {
-          name: 'Donation to Panti Asuhan BCA',
-          status: 'Drivery to Merchant'
-        }
-      ]
+      activity: [],
+      token: null
+    }
+  },
+  mounted () {
+    this.getUserToken()
+    this.fetchActivity()
+  },
+  methods: {
+    getUserToken () {
+      const token = Cookies.get('user_token')
+      this.token = token
+    },
+    fetchActivity () { 
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
 
+      api.get('/transactions', config)
+      .then((res) => {
+        const payload = res.data
+        this.activity = payload
+
+        console.log(this.activity)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
   }
-  // methods: {
-  //   goToActivityDetail () {
-  //     this.$router.push('/activ')
-  //   }
-  // }
 }
 </script>

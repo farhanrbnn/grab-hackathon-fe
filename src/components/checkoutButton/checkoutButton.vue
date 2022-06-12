@@ -11,32 +11,75 @@
       </div>
     </div>
     <div class="col-12">
-      <q-btn @click="removeLocalStorage()" style="background: #00C31E; color: white" class="full-width" label="Place Order" />
+      <q-btn @click="createOrder()" style="background: #00C31E; color: white" class="full-width" label="Place Order" />
     </div>
   </div> 
 </template>
 
 <script>
+import { api } from 'src/boot/axios'
+import { Cookies } from 'quasar'
+
 export default {
   name: 'checkoutButton',
   props: {
     grandTotal: {
       type: Number
+    },
+    merchantId: {
+      type: String
     }
   },
   data () {
     return {
-      total: null  
+      total: null,
+      token: null  
     }
+  },
+  mounted () {
+    this.getUserToken()
   },
   methods: {
     formatPrice (value) {
       const val = (value/1).toFixed(2).replace('.', ',')
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     }, 
-    removeLocalStorage () {
-      localStorage.removeItem('cart')
-      this.$router.push('/home')
+    getUserToken () {
+      const token = Cookies.get('user_token')
+      this.token = token
+    },
+    createOrder () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+      const fundingSource = localStorage.getItem('funding_source')
+      const dropOffLocation = localStorage.getItem('drop_off_location')
+      const manifest = localStorage.getItem('merchant')
+      const products = localStorage.getItem('products')
+
+      const parsedFund = JSON.parse(fundingSource)
+      const parsedDropOff = JSON.parse(dropOffLocation)
+      const parsedManifest = JSON.parse(manifest)
+      const parsedProducts = JSON.parse(products)
+
+      const checkout = {
+        manifest: {},
+        products: []
+      }
+
+      checkout.funding_source = parsedFund
+      checkout.manifest.merchant = parsedManifest
+      checkout.drop_off_location = parsedDropOff
+      checkout.products = parsedProducts
+
+      console.log(checkout)
+      api.post('/order/create', checkout, config)
+      .then((res) => {
+        console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
   }
 }

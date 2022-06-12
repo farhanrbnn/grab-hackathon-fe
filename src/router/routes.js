@@ -44,7 +44,7 @@ const routes = [
         path: 'orderHistoryDetail', component: () => import('pages/orderHistory/detailPage.vue')
       },
       { 
-        path: 'checkout', component: () => import('pages/checkout/checkoutPage.vue')
+        path: 'checkout/:merchantId', component: () => import('pages/checkout/checkoutPage.vue')
       },
       { 
         path: 'userLocation', component: () => import('pages/userLocation/userLocationPage.vue')
@@ -53,7 +53,7 @@ const routes = [
         path: 'activityList', component: () => import('pages/activity/activityPage.vue')
       },
       { 
-        path: 'activityDetail', component: () => import('pages/activity/detailPage.vue')
+        path: 'activityDetail/:orderId', component: () => import('pages/activity/detailPage.vue')
       },
       { 
         path: 'donateStat', component: () => import('pages/donateStat/donateStatPage.vue')

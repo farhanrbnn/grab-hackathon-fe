@@ -2,7 +2,7 @@
   <div class="q-pa-none"> 
     <div class="row">
         <div class="row q-mb-md" style="position: absolute !important; top: 10px; left: 10px; z-index: 1;">
-          <router-link to="/sourceFund">
+          <router-link to="/activityList">
             <div class="col-12">
               <q-icon size="3rem"  style="color: #00C31E; float: left;" name="arrow_circle_left" />
             </div>
@@ -29,7 +29,7 @@
   <div class="q-pa-md">
     <div class="row">
       <div class="col-12">
-        <h6 class="text-center q-my-sm" style="color: #00C31E;">Driver On The Way to Merchant</h6>
+        <h6 class="text-center q-my-sm" style="color: #00C31E;">Waiting</h6>
       </div>
     </div>
     <div class="row">
@@ -44,8 +44,8 @@
                 <q-icon size="2rem"  style="color: #00C31E; float: left;" name="restaurant" />
               </div>
               <div class="col-10">
-                <p>Burger Bener</p>
-                <p class="q-mb-none q-mt-md">Jl. Kemanggisan</p>
+                <p>{{ merchant.name }}</p>
+                <p class="q-mb-none q-mt-md">{{ merchant.address }}</p>
               </div>
             </div>
           </q-card-section>
@@ -64,7 +64,8 @@
                 <q-icon size="2rem"  style="color: #FF3C3C; float: left;" name="location_on" />
               </div>
               <div class="col-10">
-                <p class="q-mb-none q-mt-xs">Jalan Kemanggisan Raya</p>
+                <p class="q-mb-none q-mt-xs">{{ dropOff.name }}</p>
+
               </div>
             </div>
           </q-card-section>
@@ -79,22 +80,27 @@
         <q-card class="my-card">
           <q-card-section>
             <div class="row">
-              <div class="col-2">
-                <p class="q-my-none">10 x</p>
+              <div class="col-6">
+                <p class="q-my-none">total order</p>
               </div>
               <div class="col-6">
-                <p class="q-my-none">Burger 1</p>
-              </div>
-              <div class="col-4">
-                <p class="q-my-none text-right">Rp. Rp. 50.000</p>
+                <p class="q-my-none text-right">Rp. {{ summary.totalPrice }}</p>
               </div>
             </div>
-            <div class="row q-mt-xl">
+            <div class="row">
               <div class="col-6">
                 <p class="q-my-none">Delivery Fee</p>
               </div>
               <div class="col-6">
-                <p class="q-my-none text-right">Rp. 10.000</p>
+                <p class="q-my-none text-right">Rp. {{ summary.deliveryFee }}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <p class="q-my-none">PIC Fee</p>
+              </div>
+              <div class="col-6">
+                <p class="q-my-none text-right">Rp. {{ summary.picFee }}</p>
               </div>
             </div>
             <div class="row">
@@ -102,7 +108,7 @@
                 <p class="q-my-none">Admin Fee</p>
               </div>
               <div class="col-6">
-                <p class="q-my-none text-right">Rp. 5.000</p>
+                <p class="q-my-none text-right">Rp. {{ summary.adminFee }}</p>
               </div>
             </div>
             <div class="row">
@@ -121,7 +127,7 @@
         </q-card>
       </div>
     </div>
-    <div class="row">
+    <div v-if="this.driver !== null" class="row">
       <div class="col-12">
         <h6 class="q-mt-md q-mb-sm">Driver</h6>
       </div>
@@ -150,7 +156,68 @@
 </template>
 
 <script>
+import { Cookies } from 'quasar'
+import { api } from 'src/boot/axios'
+
 export default {
-  name:'detailPage'
+  name:'detailPage',
+  data () {
+    return {
+      token: null,
+      order: {},
+      dropOff: {},
+      center: {},
+      position: {},
+      merchant: {},
+      summary: {},
+      driver: {}
+    }
+  },
+  mounted () {
+    this.getUserToken()
+    this.fetchOrder()
+  },
+  methods: {
+    getUserToken () {
+      const token = Cookies.get('user_token')
+      this.token = token
+    },
+    fetchOrder () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+
+      api.get(`/order/${this.$route.params.orderId}`, config)
+      .then((res) => {
+        const payload = res.data
+        console.log(payload)
+        this.position = {
+          lat: payload.drop_off_location.coordinate.latitude,
+          lng: payload.drop_off_location.coordinate.longitude 
+        }
+
+        this.center = {
+          lat: payload.drop_off_location.coordinate.latitude,
+          lng: payload.drop_off_location.coordinate.longitude 
+        }
+
+        this.merchant = payload.manifest.merchant
+
+        this.dropOff.name = payload.drop_off_location.name
+
+        this.summary.adminFee = payload.manifest.admin_fee
+        this.summary.deliveryFee = payload.manifest.delivery_fee
+        this.summary.totalPrice = payload.manifest.total_price
+        this.summary.picFee = payload.manifest.pic_fee
+
+        this.driver = payload.driver
+
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+  }
+  
 }
 </script>

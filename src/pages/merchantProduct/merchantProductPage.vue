@@ -54,13 +54,13 @@
             <p class="q-my-xs">Rp. {{ formatPrice(data.price) }}</p>
             <div class="row q-mt-md">
               <div class="col-2">
-                <q-icon size="2rem" @click="removeProduct(data.id)"  style="color: #00C31E;" name="remove" />
+                <q-icon size="2rem" @click="removeProduct(data)"  style="color: #00C31E;" name="remove" />
               </div>
               <div class="col-8">
                 <h6 class="q-my-none text-center">{{ qtyCounter(data.id) }}</h6>
               </div>
               <div class="col-2">
-                <q-icon size="2rem" @click="addProduct(data.id, data.price)"  style="color: #00C31E;" name="add" />
+                <q-icon size="2rem" @click="addProduct(data)"  style="color: #00C31E;" name="add" />
               </div>
             </div>
           </q-card-section>
@@ -186,8 +186,8 @@ export default {
 
       return 0 
     },
-    goToCheckout () {
-      this.$router.push('/checkout')
+    goToCheckout (id) {
+      this.$router.push(`/checkout/${this.$route.params.merchantId}`)
     },
     getLocalData () {
       const localData = localStorage.getItem('cart')
@@ -209,16 +209,17 @@ export default {
       }
       } 
     },
-    addProduct (productId, productPrice) {
+    addProduct (val) {
       this.showFooter = true
       const localData = localStorage.getItem('cart')
       const parsedData = JSON.parse(localData)
 
       if (localData === null) {
         const data = [{
-          productId: productId,
+          productId: val.id,
           quantity: 1,
-          productPrice: productPrice
+          name: val.name,
+          productPrice: val.price 
         }]
 
         const stringifyData = JSON.stringify(data)
@@ -227,7 +228,7 @@ export default {
         this.localData = JSON.parse(stringifyData) 
 
       } else {
-        const isAvailable = parsedData.filter(d => d.productId === productId)
+        const isAvailable = parsedData.filter(d => d.productId === val.id)
 
         if (isAvailable.length != 0) { 
           isAvailable[0].quantity = isAvailable[0].quantity + 1
@@ -238,9 +239,10 @@ export default {
 
         } else {
           const newProduct = {
-            productId: productId,
+            productId: val.id,
             quantity: 1,
-            productPrice: productPrice
+            name: val.name,
+            productPrice: val.price 
           }
 
           parsedData.push(newProduct)
@@ -252,12 +254,12 @@ export default {
         this.localData = parsedData 
       }
     },
-    removeProduct (productId) {
+    removeProduct (val) {
       const localData = localStorage.getItem('cart')
       const parsedData = JSON.parse(localData)
 
-      const product = parsedData.filter(d => d.productId === productId)
-
+      const product = parsedData.filter(d => d.productId === val.id)
+      
       if (product[0].quantity > 0) {
         product[0].quantity = product[0].quantity - 1
 
