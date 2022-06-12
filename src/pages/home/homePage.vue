@@ -2,7 +2,7 @@
   <div class="q-pa-md" style="padding-bottom: 100px;">
     <div class="row">
       <div class="col-6">
-        <p class="text-left q-mt-xs">Hi, Farhan Rabbaanii</p>
+        <p class="text-left q-mt-xs">Hi, {{ userData.name }}</p>
       </div>
       <div class="col-6">
         <router-link to="/account">
@@ -29,7 +29,7 @@
               <div class="col-12">
                 <div class="row">
                   <div class="col-8 q-mb-md">
-                    <p class="q-mb-none"> Sejak pakai Soombang, kamu sudah berderma sebanyak </p>
+                    <p class="q-mb-none"> Since using Soombang, you have donated as much </p>
                     <h6 class="q-my-xs" style="color: #00C31E">Rp. 2.000.000</h6>
                   </div>
                   <div class="col-4"> 
@@ -42,7 +42,7 @@
                 </div>
               </div>
               <div class="col-2">
-                <a href="" style="color: #00C31E;">
+                <a href="/#/donateStat" style="color: #00C31E;">
                   Detail
                   <q-icon class="q-mt-xs" style="color: #00C31E; float: right;" name="chevron_right" />
                 </a>
@@ -63,10 +63,10 @@
                 </p>
                 <img
                   alt="ovo" 
-                  src="~assets/ovo.svg"
+                  src="~assets/OVO.svg"
                   style="width: 40px; height: 40px; float: left;"
                 >
-                <h6 class="q-my-none q-ml-s" style="color: #00C31E; float: left;"> Rp. 500.000</h6>
+                <h6 class="q-my-none q-ml-s" style="color: #00C31E; float: left;"> Rp. {{ userWallet.effective_amount }}</h6>
               </div>
               <div class="col-4">
                 <router-link to="/changeWallet">
@@ -90,7 +90,10 @@
       <div class="col-6">
         <a href="/#/orderHistory"  class="q-my-md" style="float: right; color:#00C31E;">See More</a>
       </div>
-      <div @click="goToHistoryDetail()"  v-for="(data, idx) in lastTransactions" :key="idx" class="col-12 q-mb-xs">
+      <div v-if="listTransaction.length === 0" class="col-12"> 
+        <h6 class="text-center">You don't have any transactions yet</h6>
+      </div> 
+      <div @click="goToHistoryDetail()"  v-for="(data, idx) in listTransaction" :key="idx" class="col-12 q-mb-xs">
         <q-card class="my-card">
           <q-card-section>
             <div class="row">
@@ -119,6 +122,7 @@
 import axios from 'axios'
 import { Cookies } from 'quasar'
 import footerMenu from '../../components/footerMenu/footerMenu.vue'
+import { api } from 'src/boot/axios'
 
 export default {
   name: 'homePage',
@@ -145,13 +149,82 @@ export default {
         }
       ],
       address: null,
-      position: null
+      position: null,
+      token: null,
+      userData: {},
+      userWallet: {},
+      walletOrigin: [],
+      listTransaction: []
     }
   },
   created () {
     this.setUserGeo()
   },
+  mounted () {
+    this.getUserToken()
+    this.fetchUserData()
+    this.fetchUserWallet()
+    this.fetchUserTransaction()
+  },
   methods: {
+    fetchUserTransaction () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+
+      api.get('/transactions', config)
+      .then((res) => {
+        const payload = this.res
+        
+        if (payload !== undefined) {
+          this.listTransaction = payload.data 
+        }
+
+        this.listTransaction = [] 
+        console.log(this.listTransaction)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
+    async fetchUserWallet () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+      await api.get('/user-wallets', config)
+      .then((res) => {
+        const stringifyData = JSON.stringify(res.data[0])
+
+        const payload = res.data[0]
+        payload.effective_amount = this.formatPrice(payload.effective_amount)
+
+        this.userWallet = payload
+
+      })
+      .catch((err) => {
+        console.log(err)
+      }) 
+    },
+    formatPrice (value) {
+      const val = (value/1).toFixed(2).replace('.', ',')
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    },
+    fetchUserData () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+      api.get('/user', config)
+      .then((res) => {
+        this.userData = res.data
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
+    getUserToken () {
+      const token = Cookies.get('user_token')
+      this.token = token
+    },
     goToHistoryDetail () {
       this.$router.push('/orderHistoryDetail')
     },

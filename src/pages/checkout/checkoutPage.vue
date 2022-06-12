@@ -1,5 +1,5 @@
 <template>
-  <div class="q-ma-md">
+  <div class="q-ma-md" style="padding-bottom: 200px;">
     <div class="row">
       <router-link to="/merchantProduct">
         <div class="col-12">
@@ -82,6 +82,41 @@
     </div>
     <div class="row">
       <div class="col-12">
+        <h6 class="q-mt-md q-mb-none">Funding Source</h6>
+      </div>
+      <div class="col-12">
+        <q-card class="my-card">
+          <q-card-section>
+            <div class="row">
+              <div class="col-2">
+                <img
+                  :alt="fundingSource.name" 
+                  :src="fundingSource.img"
+                  style="width: 40px; height: 50px; float: left;"
+                >
+              </div>
+              <div class="col-10">
+                <p class="q-my-none q-mt-sm">{{ fundingSource.name }}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+               <p class="q-mt-md q-mb-none">
+                  <b>Total Funding</b> 
+                 </p> 
+              </div>
+              <div class="col-6">
+               <p class="q-mt-md q-mb-none text-right">
+                 <b> Rp. 1.000.000</b>
+               </p> 
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
         <h6 class="q-mt-md q-mb-none">Payment Method</h6>
       </div>
       <div class="col-12">
@@ -103,9 +138,8 @@
         </q-card>
       </div>
     </div>
-
-    <checkout-button :grandTotal="grandTotal" />
   </div>
+  <checkout-button :grandTotal="grandTotal" />
 </template>
 
 <script>
@@ -121,7 +155,11 @@ export default {
     return {
       payment: {
         name: 'OVO Cash',
-        img: require('../../assets/ovo.svg') 
+        img: require('../../assets/OVO.svg') 
+      },
+      fundingSource: {
+        name: 'KitaBisa',
+        img: require('../../assets/kitabisa.png')
       },
       cart: null,
       formatSubtotalPrice: null,

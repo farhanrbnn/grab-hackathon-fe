@@ -35,7 +35,7 @@ const routes = [
         path: 'merchant', component: () => import('pages/merchant/merchantPage.vue')
       },
       { 
-        path: 'merchantProduct', component: () => import('pages/merchantProduct/merchantProductPage.vue')
+        path: 'merchantProduct/:merchantId', component: () => import('pages/merchantProduct/merchantProductPage.vue')
       },
       { 
         path: 'orderHistory', component: () => import('pages/orderHistory/orderHistoryPage.vue')
@@ -51,6 +51,12 @@ const routes = [
       },
       { 
         path: 'activityList', component: () => import('pages/activity/activityPage.vue')
+      },
+      { 
+        path: 'activityDetail', component: () => import('pages/activity/detailPage.vue')
+      },
+      { 
+        path: 'donateStat', component: () => import('pages/donateStat/donateStatPage.vue')
       },
       { 
         path: 'activityDetail', component: () => import('pages/activity/detailPage.vue')

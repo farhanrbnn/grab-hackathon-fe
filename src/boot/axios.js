@@ -8,7 +8,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json; charset=utf-8'
   },
-  baseURL: 'http://192.168.0.133:9090/api/v1/'
+  baseURL: 'http://ec2-52-221-244-108.ap-southeast-1.compute.amazonaws.com:9090/api/v1'
  })
 
 export default boot(({ app }) => {

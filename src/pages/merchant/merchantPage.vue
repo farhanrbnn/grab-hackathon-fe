@@ -14,8 +14,8 @@
       </div>
     </div>
     <div class="row">
-      <div v-for="(data, idx) in merchantList" :key="idx" class="col-12 q-mb-md">
-        <q-card @click="goToMerchantProduct(data.isAvailable)"  :class="(data.isAvailable) ? 'myCard':'myCard disabledCard'">
+      <div v-for="(data, idx) in merchantLists" :key="idx" class="col-12 q-mb-md">
+        <q-card @click="goToMerchantProduct(data.is_available, data.id)"  :class="(data.is_available) ? 'myCard':'myCard disabledCard'">
           <q-card-section>
             <div class="row">
               <div class="col-2">
@@ -41,6 +41,9 @@
 </template>
 
 <script>
+import { Cookies } from 'quasar'
+import { api } from 'src/boot/axios'
+
 export default {
   name: 'merchantPage',
   data () {
@@ -62,14 +65,38 @@ export default {
           rating: '4.6',
           isAvailable: false,
         }
-      ]
+      ],
+      token: null,
+      merchantLists: []
     }
   },
+  mounted () {
+    this.getUserToken()
+    this.fetchMerchant()
+  },
   methods: {
-    goToMerchantProduct (status) {
+    goToMerchantProduct (status, merchantId) {
       if (status) {
-        this.$router.push('/merchantProduct')
+        this.$router.push(`/merchantProduct/${merchantId}`)
       }
+    },
+    getUserToken () {
+      const token = Cookies.get('user_token')
+      this.token = token
+    },
+    fetchMerchant () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+      api.get('/merchants', config)
+      .then((res) => {
+        const payload = res.data
+        this.merchantLists = payload
+        console.log(this.merchantLists)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
   }
 }

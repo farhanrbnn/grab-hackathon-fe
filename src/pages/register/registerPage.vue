@@ -85,12 +85,8 @@ export default {
 
       api.post('user/create', userData)
       .then((res) => {
-        const $q = useQuasar()
-        $q.notify({
-          message: 'Jim pinged you.',
-          caption: '5 minutes ago',
-          color: 'secondary'
-        }) 
+        alert('success register')
+        this.$router.push('/login')
       })
       .catch((err) => {
         console.log(err)

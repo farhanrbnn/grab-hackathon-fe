@@ -42,6 +42,8 @@
 
 <script>
 import { api } from 'src/boot/axios'
+import { Cookies } from 'quasar'
+
 export default {
   name: 'loginsPage',
   data () {
@@ -58,6 +60,11 @@ export default {
 
       api.post('user/signin', userData)
       .then((res) => {
+        const data = res.data
+        Cookies.set('user_token', data.token, {
+          secure: true,
+          expires: data.expires_at
+        })
         this.$router.push('/home')
       })
       .catch((err) => {

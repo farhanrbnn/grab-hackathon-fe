@@ -65,7 +65,6 @@ export default {
     }
   },
   created () {
-    // this.setUserGeo()
     this.getCookie()
   },
   methods: {
@@ -73,7 +72,6 @@ export default {
       this.position = Cookies.get('geolocation')
       this.center = Cookies.get('geolocation')
       this.address = Cookies.get('user_address')
-      console.log(this.position)
     },
     getAddress () {
       axios.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + this.position.lat +','+ this.position.lng +'&key=AIzaSyAXeq6g3HL9uaX2X-kphWHhr-MghMf844A')
@@ -84,8 +82,7 @@ export default {
       })
     },
     onSubmit () {
-      console.log('testing')
-      this.$router.push('/merchant')
+      this.$router.push('/home')
     },
     async setUserGeo () {
       await navigator.geolocation.getCurrentPosition((position) => {

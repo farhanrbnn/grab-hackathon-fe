@@ -14,19 +14,19 @@
       </div>
     </div>
     <div class="row">
-      <div v-for="(data, idx) in bankList" :key="idx" class="col-12 q-mb-xs">
-         <q-card @click="doChangeWallet(data.isAvailable)" :class="(data.isAvailable) ? 'myCard':'myCard disabledCard'">
+      <div v-for="(data, idx) in wallets" :key="idx" class="col-12 q-mb-xs">
+         <q-card class="my-card">
           <q-card-section>
             <div class="row">
               <div class="col-2">
                 <img
                   :alt="data.bankName " 
-                  :src="data.imagePath"
+                  :src="require(`../../assets/${data.img}.svg`)"
                   style="width: 40px; height: 40px; float: left;"
                 >
               </div>
               <div class="col-10">
-                <h5 class="q-my-none text-center">{{ data.bankName }}</h5>
+                <h5 class="q-my-none text-center">{{ data.name }}</h5>
               </div>
             </div> 
           </q-card-section>
@@ -37,41 +37,46 @@
 </template>
 
 <script>
+import { api } from 'src/boot/axios'
+import { Cookies } from 'quasar'
+
 export default {
   name: 'changeWallet',
   data () {
     return {
       data: '',
-      bankList:[
-        {
-          bankName: 'OVO Cash',
-          imagePath: require('../../assets/ovo.svg'),
-          isAvailable: true 
-        },
-        {
-          bankName: 'Bank BCA',
-          imagePath: require('../../assets/bca.svg'),
-          isAvailable: true 
-        },
-        {
-          bankName: 'Bank Mandiri',
-          imagePath: require('../../assets/mandiri.svg'),
-          isAvailable: false 
-        },
-        {
-          bankName: 'Bank BNI',
-          imagePath: require('../../assets/bni.svg'),
-          isAvailable: true
-        },
-        {
-          bankName: 'Bank BRI',
-          imagePath: require('../../assets/bri.svg'),
-          isAvailable: true
-        }
-      ]
+      token: null,
+      wallets: []
     }
   },
+  mounted () {
+    this.getUserToken()
+    this.fetchWallets()
+  },
   methods: {
+    getUserToken () {
+      const token = Cookies.get('user_token')
+      this.token = token
+    },
+    fetchWallets () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+
+      api.get('/wallets', config)
+      .then((res) => {
+        const payload = res.data
+        for (let i = 0; i < payload.length; i++) {
+          const splitName = payload[i].name.split(" ")
+
+          payload[i].img = splitName[0]
+        }
+        this.wallets = payload
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
     doChangeWallet (status) {
       if (status) {
         this.$router.push('/home')

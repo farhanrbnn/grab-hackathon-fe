@@ -24,7 +24,7 @@
           <q-card-section>
             <div class="row">
               <div class="col-12">
-                <h6 class="q-my-xs text-center">Burger Bener</h6>
+                <h6 class="q-my-xs text-center">{{ merchant.name }}</h6>
               </div>
             </div>
           </q-card-section>
@@ -40,12 +40,12 @@
     </div>
     <div class="row justify-center q-gutter-xs" style="padding-bottom: 100px;">
       <q-intersection
-        v-for="data in listProduct"
-        :key="data.productId"
+        v-for="data in products"
+        :key="data.id"
         class="example-item"
       >
         <q-card class="q-ma-sm">
-          <img :src="data.images" style="width: 10rem;">
+          <img :src="require('../../assets/burger.jpeg')" style="width: 15rem;">
           <q-card-section>
             <p class="q-my-none">
               <b>{{ data.name }}</b>
@@ -54,13 +54,13 @@
             <p class="q-my-xs">Rp. {{ formatPrice(data.price) }}</p>
             <div class="row q-mt-md">
               <div class="col-2">
-                <q-icon size="2rem" @click="removeProduct(data.productId)"  style="color: #00C31E;" name="remove" />
+                <q-icon size="2rem" @click="removeProduct(data.id)"  style="color: #00C31E;" name="remove" />
               </div>
               <div class="col-8">
-                <h6 class="q-my-none text-center">{{ qtyCounter(data.productId) }}</h6>
+                <h6 class="q-my-none text-center">{{ qtyCounter(data.id) }}</h6>
               </div>
               <div class="col-2">
-                <q-icon size="2rem" @click="addProduct(data.productId, data.price)"  style="color: #00C31E;" name="add" />
+                <q-icon size="2rem" @click="addProduct(data.id, data.price)"  style="color: #00C31E;" name="add" />
               </div>
             </div>
           </q-card-section>
@@ -77,6 +77,8 @@
 
 <script>
 import footerProductDisplay from '../../components/footerProduct/footerProductDisplay.vue'
+import { Cookies } from 'quasar'
+import { api } from 'src/boot/axios'
 
 export default {
   name: 'merchantProductPage',
@@ -117,7 +119,10 @@ export default {
      ],
      showFooter: false,
      cart: null,
-     localData: null 
+     localData: null,
+     token: null,
+     products: [],
+     merchant: {}
     }
   },
   watch: {
@@ -129,8 +134,44 @@ export default {
   mounted () {
     this.footerStatus()
     this.getLocalData()
+    this.getUserToken()
+    this.fetchMerchantProduct()
+    this.fetchMerchant()
   },
   methods: {
+    getUserToken () {
+      const token = Cookies.get('user_token')
+      this.token = token
+    },
+    fetchMerchant () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+
+      api.get(`/merchant/${this.$route.params.merchantId}`, config)
+      .then((res) => {
+        const payload = res.data
+        this.merchant = payload
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
+    fetchMerchantProduct () {
+      const config = {
+        headers: { Authorization: `Bearer ${this.token}` }
+      }
+
+      api.get('/products', config)
+      .then((res) => {
+        const payload = res.data
+        this.products = payload
+        console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
     qtyCounter (id) {
       const localData = localStorage.getItem('cart')
       const parsedData = JSON.parse(localData)
