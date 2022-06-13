@@ -29,7 +29,7 @@
   <div class="q-pa-md">
     <div class="row">
       <div class="col-12">
-        <h6 class="text-center q-my-sm" style="color: #00C31E;">Paid</h6>
+        <h6 class="text-center q-my-sm" style="color: #00C31E;">{{ status }}</h6>
       </div>
     </div>
     <div class="row">
